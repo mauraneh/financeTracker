@@ -22,7 +22,7 @@ public class IncomeController {
     public void initialize() {
         incomeTable.setItems(IncomeDAO.getIncomes());
     }
-    
+
     @FXML
     public void addIncome(ActionEvent event) {
         Dialog<Income> addPersonDialog = new IncomeDialog();
@@ -31,4 +31,12 @@ public class IncomeController {
 
         log.debug(result.toString());
         event.consume();
-    }}
+    }
+    public void deleteIncome(ActionEvent event) {
+        Income selectedIncome = incomeTable.getSelectionModel().getSelectedItem();
+        if (selectedIncome != null) {
+           IncomeDAO.deleteIncome(selectedIncome);
+        }
+        event.consume();
+    }
+}

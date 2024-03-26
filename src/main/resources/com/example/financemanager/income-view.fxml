@@ -62,6 +62,7 @@
             </VBox>
             <HBox alignment="CENTER_RIGHT" prefHeight="40.0" spacing="20.0" BorderPane.alignment="CENTER">
                 <Button text="Ajouter" onAction="#addIncome"/>
+                <Button text="Supprimer" onAction="#deleteIncome"/>
             </HBox>
         </VBox>
     </center>

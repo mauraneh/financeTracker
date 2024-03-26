@@ -1,5 +1,6 @@
 package com.example.financemanager.db;
 
+import com.example.financemanager.model.Expense;
 import com.example.financemanager.model.Income;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -112,4 +113,20 @@ public class IncomeDAO {
         return lastIncomes;
     }
 
+    public static void deleteIncome(Income selectedIncome) {
+        //update database
+        String query = "DELETE FROM " + tableName + " WHERE " + dateColumn + " = ?";
+
+        try (Connection connection = Database.connect()) {
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, selectedIncome.getDate().format(DATE_FORMAT));
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            log.error("Could not delete Income from database", e);
+        }
+
+        //update cache
+        incomes.remove(selectedIncome);
+    }
 }
