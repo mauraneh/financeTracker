@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.chart.BarChart?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="720.0" prefWidth="1280.0"
             stylesheets="@css/styles.css" xmlns="http://javafx.com/javafx/10.0.2-internal"
             fx:controller="com.example.financemanager.controller.DashboardController">
@@ -30,6 +31,14 @@
                     </yAxis>
                 </LineChart>
             </HBox>
+            <BarChart fx:id="barChart" title="Comparaison Revenus et Dépenses" animated="false" legendVisible="true">
+                <xAxis>
+                    <CategoryAxis fx:id="xAxisBarChart" side="BOTTOM" label="Mois"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis fx:id="yAxisBarChart" side="LEFT" label="Montant"/>
+                </yAxis>
+            </BarChart>
         </VBox>
     </center>
 </BorderPane>

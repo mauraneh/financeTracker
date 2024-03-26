@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import static com.example.financemanager.FinanceTrackerApplication.findAndCreateOSFolder;
 
 public class Database {
-    private static final Logger log = LoggerFactory.getLogger(Database.class);
+    public static final Logger log = LoggerFactory.getLogger(Database.class);
 
     /**
      * Location of database
@@ -65,11 +65,28 @@ public class Database {
                              tax REAL NOT NULL,
                              other REAL NOT NULL
                      );
+                     
+                
                    """;
+        String createTablesIncome = """
+                CREATE TABLE IF NOT EXISTS income(
+                             date TEXT NOT NULL,
+                             salary REAL NOT NULL,
+                             aids REAL NOT NULL,
+                             freelance REAL NOT NULL,
+                             passive REAL NOT NULL,
+                             other REAL NOT NULL
+                     );
+                     
+                
+                   """;
+
 
         try (Connection connection = Database.connect()) {
             PreparedStatement statement = connection.prepareStatement(createTables);
+            PreparedStatement statementI = connection.prepareStatement(createTablesIncome);
             statement.executeUpdate();
+            statementI.executeUpdate();
             return true;
         } catch (SQLException exception) {
             log.error("Could not create tables in database", exception);

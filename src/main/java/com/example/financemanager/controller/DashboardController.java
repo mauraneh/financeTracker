@@ -1,16 +1,22 @@
 package com.example.financemanager.controller;
 
 import com.example.financemanager.db.ExpenseDAO;
+import com.example.financemanager.db.IncomeDAO;
+
 import com.example.financemanager.model.Expense;
+import com.example.financemanager.model.Income;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.ChoiceBox;
+import javafx.util.Pair;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DashboardController {
 
@@ -28,6 +34,9 @@ public class DashboardController {
 
     @FXML
     private ChoiceBox<String> periodChoiceBox;
+
+    @FXML
+    private BarChart<String, Number> barChart;
 
     private final static DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MMM yy");
     private final static DateTimeFormatter FULL_DATE_FORMAT = DateTimeFormatter.ofPattern("MMMM yyyy");
@@ -106,5 +115,46 @@ public class DashboardController {
         var periodSelected = periodChoiceBox.getSelectionModel().getSelectedItem();
         LocalDate dateSelected = LocalDate.parse("01 " + periodSelected, DateTimeFormatter.ofPattern("dd MMMM yyyy"));
         loadExpenses(dateSelected);
+        loadExpensesAndIncomes(dateSelected);
     }
+
+    private void loadExpensesAndIncomes(LocalDate currentMonth) {
+        LinkedHashMap<String, Pair<Float, Float>> totalsByMonth = new LinkedHashMap<>();
+        // Initialisation de la map avec des zéros pour les 12 derniers mois
+        LocalDate date = currentMonth.minusMonths(11);
+        for (int i = 0; i < 12; i++) {
+            totalsByMonth.put(date.format(DateTimeFormatter.ofPattern("MMM yy")), new Pair<>(0f, 0f));
+            date = date.plusMonths(1);
+        }
+        // Récupération des dépenses des 12 derniers mois
+        List<Expense> lastExpenses = ExpenseDAO.findLastExpensesEndingAtCurrentMonth(12, currentMonth);
+        for (Expense expense : lastExpenses) {
+            String monthKey = expense.getDate().format(DateTimeFormatter.ofPattern("MMM yy"));
+            Pair<Float, Float> totals = totalsByMonth.getOrDefault(monthKey, new Pair<>(0f, 0f));
+            totalsByMonth.put(monthKey, new Pair<>(totals.getKey() + expense.getTotal(), totals.getValue()));
+        }
+        // Récupération des revenus des 12 derniers mois
+        List<Income> lastIncomes = IncomeDAO.findLastIncomesEndingAtCurrentMonth(12, currentMonth);
+        for (Income income : lastIncomes) {
+            String monthKey = income.getDate().format(DateTimeFormatter.ofPattern("MMM yy"));
+            Pair<Float, Float> totals = totalsByMonth.getOrDefault(monthKey, new Pair<>(0f, 0f));
+            totalsByMonth.put(monthKey, new Pair<>(totals.getKey(), totals.getValue() + income.getTotal()));
+        }
+        // Correction pour la déclaration des séries de données
+        XYChart.Series<String, Number> expensesSeries = new XYChart.Series<>();
+        expensesSeries.setName("Dépenses");
+        XYChart.Series<String, Number> incomesSeries = new XYChart.Series<>();
+        incomesSeries.setName("Revenus");
+
+        // Ajout des données aux séries
+        for (Map.Entry<String, Pair<Float, Float>> entry : totalsByMonth.entrySet()) {
+            String month = entry.getKey();
+            Pair<Float, Float> totals = entry.getValue();
+            expensesSeries.getData().add(new XYChart.Data<>(month, totals.getKey()));
+            incomesSeries.getData().add(new XYChart.Data<>(month, totals.getValue()));
+        }
+        barChart.getData().clear();
+        barChart.getData().addAll(expensesSeries, incomesSeries);
+    }
+
 }

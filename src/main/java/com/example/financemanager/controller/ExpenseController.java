@@ -29,4 +29,12 @@ public class ExpenseController {
         event.consume();
     }
 
+public void deleteExpense(ActionEvent event) {
+        Expense selectedExpense = expenseTable.getSelectionModel().getSelectedItem();
+        if (selectedExpense != null) {
+            ExpenseDAO.deleteExpense(selectedExpense);
+        }
+        event.consume();
+    }
+
 }

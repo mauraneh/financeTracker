@@ -2,6 +2,7 @@ package com.example.financemanager;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.ChoiceBox;
@@ -101,5 +102,20 @@ public class DashboardTest {
         verifyThat("#lineChart", isVisible());
 
         assertThat(robot.lookup("#lineChart").queryAs(LineChart.class).getTitle(), equalTo("Évolution des dépenses"));
+
+        verifyThat("#barChart", isVisible());
+
+        assertThat(robot.lookup("#barChart").queryAs(BarChart.class).getTitle(), equalTo("Comparaison Revenus et Dépenses"));
+    }
+
+    @Test
+    public void shouldDisplayIncomePageWhenSelected(FxRobot robot) throws TimeoutException {
+        robot.clickOn("Navigation");
+
+        WaitForAsyncUtils.waitFor(2, TimeUnit.SECONDS, () -> robot.lookup("Revenus").match(NodeQueryUtils.isVisible()).tryQuery().isPresent());
+
+        robot.clickOn("Revenus", Motion.VERTICAL_FIRST, MouseButton.PRIMARY);
+
+        verifyThat(".title-text", hasText("Tableau récapitulatif des revenus"));
     }
 }

@@ -13,7 +13,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ExpenseDAO {
 
@@ -116,6 +118,19 @@ public class ExpenseDAO {
             log.error("Could not load Expenses from database", e);
         }
         return lastExpenses;
+    }
 
+    public static void deleteExpense(Expense selectedExpense) {
+        String query = "DELETE FROM " + tableName + " WHERE " + dateColumn + " = ?";
+
+        try (Connection connection = Database.connect()) {
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, selectedExpense.getDate().format(DATE_FORMAT));
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            log.error("Could not delete Expense from database", e);
+        }
+
+        expenses.remove(selectedExpense);
     }
 }
