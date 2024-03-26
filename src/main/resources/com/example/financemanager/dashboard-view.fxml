@@ -21,8 +21,8 @@
                 <ChoiceBox fx:id="periodChoiceBox" prefWidth="150.0" onAction="#changePeriod" />
             </VBox>
             <HBox alignment="CENTER">
-                <PieChart fx:id="pieChart" title="Répartition des dépenses" legendVisible="false"/>
-                <LineChart fx:id="lineChart" title="Évolution des dépenses">
+                <PieChart fx:id="pieChart" title="Répartition des charges" legendVisible="false"/>
+                <LineChart fx:id="lineChart" title="Évolution des charges">
                     <xAxis>
                         <CategoryAxis fx:id="xAxis" side="BOTTOM" label="Date"/>
                     </xAxis>
@@ -31,7 +31,7 @@
                     </yAxis>
                 </LineChart>
             </HBox>
-            <BarChart fx:id="barChart" title="Comparaison Revenus et Dépenses" animated="false" legendVisible="true">
+            <BarChart fx:id="barChart" title="Comparaison budgétaire" animated="false" legendVisible="true">
                 <xAxis>
                     <CategoryAxis fx:id="xAxisBarChart" side="BOTTOM" label="Mois"/>
                 </xAxis>

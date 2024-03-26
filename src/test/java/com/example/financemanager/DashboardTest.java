@@ -59,18 +59,21 @@ public class DashboardTest {
             verifyThat(menu, MenuItemMatchers.hasText("Navigation"));
             verifyThat(menu.getItems().get(0), MenuItemMatchers.hasText("Tableau de bord"));
             verifyThat(menu.getItems().get(1), MenuItemMatchers.hasText("Dépenses"));
+            verifyThat(menu.getItems().get(2), MenuItemMatchers.hasText("Revenus"));
         });
     }
 
     @Test
     public void shouldChangeStageWhenClickOnMenu(FxRobot robot) throws TimeoutException {
         robot.clickOn("Navigation");
-
         WaitForAsyncUtils.waitFor(2, TimeUnit.SECONDS, () -> robot.lookup("Dépenses").match(NodeQueryUtils.isVisible()).tryQuery().isPresent());
-
         robot.clickOn("Dépenses", Motion.VERTICAL_FIRST, MouseButton.PRIMARY);
-
         verifyThat(".title-text", hasText("Tableau récapitulatif des dépenses"));
+
+        robot.clickOn("Navigation");
+        WaitForAsyncUtils.waitFor(2, TimeUnit.SECONDS, () -> robot.lookup("Revenus").match(NodeQueryUtils.isVisible()).tryQuery().isPresent());
+        robot.clickOn("Revenus", Motion.VERTICAL_FIRST, MouseButton.PRIMARY);
+        verifyThat(".title-text", hasText("Tableau récapitulatif des revenus"));
     }
 
     @Test
@@ -97,25 +100,15 @@ public class DashboardTest {
     public void shouldHaveCharts(FxRobot robot) {
         verifyThat("#pieChart", isVisible());
 
-        assertThat(robot.lookup("#pieChart").queryAs(PieChart.class).getTitle(), equalTo("Répartition des dépenses"));
+        assertThat(robot.lookup("#pieChart").queryAs(PieChart.class).getTitle(), equalTo("Répartition des charges"));
 
         verifyThat("#lineChart", isVisible());
 
-        assertThat(robot.lookup("#lineChart").queryAs(LineChart.class).getTitle(), equalTo("Évolution des dépenses"));
+        assertThat(robot.lookup("#lineChart").queryAs(LineChart.class).getTitle(), equalTo("Évolution des charges"));
 
         verifyThat("#barChart", isVisible());
 
-        assertThat(robot.lookup("#barChart").queryAs(BarChart.class).getTitle(), equalTo("Comparaison Revenus et Dépenses"));
+        assertThat(robot.lookup("#barChart").queryAs(BarChart.class).getTitle(), equalTo("Comparaison budgétaire"));
     }
 
-    @Test
-    public void shouldDisplayIncomePageWhenSelected(FxRobot robot) throws TimeoutException {
-        robot.clickOn("Navigation");
-
-        WaitForAsyncUtils.waitFor(2, TimeUnit.SECONDS, () -> robot.lookup("Revenus").match(NodeQueryUtils.isVisible()).tryQuery().isPresent());
-
-        robot.clickOn("Revenus", Motion.VERTICAL_FIRST, MouseButton.PRIMARY);
-
-        verifyThat(".title-text", hasText("Tableau récapitulatif des revenus"));
-    }
 }

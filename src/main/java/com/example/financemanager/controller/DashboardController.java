@@ -142,9 +142,9 @@ public class DashboardController {
         }
         // Correction pour la déclaration des séries de données
         XYChart.Series<String, Number> expensesSeries = new XYChart.Series<>();
-        expensesSeries.setName("Dépenses");
+        expensesSeries.setName("Frais");
         XYChart.Series<String, Number> incomesSeries = new XYChart.Series<>();
-        incomesSeries.setName("Revenus");
+        incomesSeries.setName("Salaire");
 
         // Ajout des données aux séries
         for (Map.Entry<String, Pair<Float, Float>> entry : totalsByMonth.entrySet()) {
